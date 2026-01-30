@@ -44,6 +44,7 @@
             conductor-status
             conductor-revert
             ;
+          inherit (pkgs.piSkills.browser) browser-tools;
           inherit (pkgs.piPrompts) git-commit;
           default = pkgs.pi-coding-agent;
         }

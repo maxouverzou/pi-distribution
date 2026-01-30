@@ -22,6 +22,12 @@
       pkgs = final;
       inherit (final) mkSkillFromGeminiCommand;
     };
+
+    # Browser automation skills
+    browser = import ./skills/browser-tools {
+      pkgs = final;
+      inherit (final) mkSkillWithDeps;
+    };
   };
 
   # Prompt templates

@@ -20,6 +20,7 @@ packages
   inherit (piLib.pi)
     mkSkill
     mkSkillFromGeminiCommand
+    mkSkillWithDeps
     mkPromptTemplate
     mkExtension
     mkExtensionWithDeps
