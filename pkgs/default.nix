@@ -23,4 +23,9 @@
       inherit (final) mkSkillFromGeminiCommand;
     };
   };
+
+  # Prompt templates
+  piPrompts = import ./prompts {
+    pkgs = final;
+  };
 }
