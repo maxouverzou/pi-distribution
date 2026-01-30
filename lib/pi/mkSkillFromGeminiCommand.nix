@@ -22,6 +22,7 @@
 
   # Optional overrides
   description ? null, # Override description from TOML
+  version ? null, # Package version
   license ? null,
   compatibility ? null,
   metadata ? { },
@@ -134,7 +135,14 @@ let
   builtReferences = lib.mapAttrs buildReference references;
 
 in
-pkgs.runCommand "skill-${name}" { } ''
+pkgs.runCommand "skill-${name}"
+  (
+    {
+      pname = "skill-${name}";
+    }
+    // lib.optionalAttrs (version != null) { inherit version; }
+  )
+  ''
   mkdir -p $out
   cat > $out/SKILL.md << 'SKILLEOF'
   ${skillMdContent}

@@ -5,11 +5,15 @@
 { pkgs, mkSkillFromGeminiCommand }:
 
 let
+  # Version from the conductor repository
+  conductorVersion = "0.2.0";
+  conductorRev = "conductor-v${conductorVersion}";
+  
   # Fetch the conductor repository
   conductorSrc = pkgs.fetchFromGitHub {
     owner = "gemini-cli-extensions";
     repo = "conductor";
-    rev = "conductor-v0.2.0";
+    rev = conductorRev;
     sha256 = "sha256-e4jMBtI4OA83VmHAwsmGTqD0hDHzuBPVLRZi4x3ty1w=";
   };
 
@@ -35,6 +39,7 @@ in
   # Templates are referenced via absolute Nix store paths in the instructions
   conductor-setup = mkSkillFromGeminiCommand {
     name = "conductor-setup";
+    version = conductorVersion;
     src = "${commandsPath}/setup.toml";
     metadata = commonMetadata;
     replacements = templatePathReplacements;
@@ -43,6 +48,7 @@ in
   # Implement - executes the tasks defined in the specified track's plan
   conductor-implement = mkSkillFromGeminiCommand {
     name = "conductor-implement";
+    version = conductorVersion;
     src = "${commandsPath}/implement.toml";
     metadata = commonMetadata;
   };
@@ -50,6 +56,7 @@ in
   # New Track - plans a track and generates track-specific spec documents
   conductor-new-track = mkSkillFromGeminiCommand {
     name = "conductor-new-track";
+    version = conductorVersion;
     src = "${commandsPath}/newTrack.toml";
     metadata = commonMetadata;
   };
@@ -57,6 +64,7 @@ in
   # Status - displays the current progress of the project
   conductor-status = mkSkillFromGeminiCommand {
     name = "conductor-status";
+    version = conductorVersion;
     src = "${commandsPath}/status.toml";
     metadata = commonMetadata;
   };
@@ -64,6 +72,7 @@ in
   # Revert - reverts previous work
   conductor-revert = mkSkillFromGeminiCommand {
     name = "conductor-revert";
+    version = conductorVersion;
     src = "${commandsPath}/revert.toml";
     metadata = commonMetadata;
   };

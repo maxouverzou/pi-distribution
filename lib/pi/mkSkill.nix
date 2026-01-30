@@ -16,6 +16,7 @@
   instructions, # Markdown string (body of SKILL.md)
 
   # Optional frontmatter fields
+  version ? null, # Package version
   license ? null,
   compatibility ? null,
   metadata ? { },
@@ -95,7 +96,14 @@ let
   builtReferences = lib.mapAttrs buildReference references;
 
   # Main derivation
-  skillDrv = pkgs.runCommand "skill-${name}" { } ''
+  skillDrv = pkgs.runCommand "skill-${name}"
+    (
+      {
+        pname = "skill-${name}";
+      }
+      // lib.optionalAttrs (version != null) { inherit version; }
+    )
+    ''
     mkdir -p $out
 
     # Write SKILL.md
