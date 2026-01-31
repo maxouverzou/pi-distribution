@@ -14,113 +14,6 @@
 
 let
   cfg = config.programs.pi;
-
-  # Helper to get skill name from derivation
-  # The skill derivation is expected to have SKILL.md at its root
-  getSkillName =
-    skillDrv:
-    let
-      # Read the SKILL.md to extract the name from frontmatter
-      # For now, we derive the name from the derivation name
-      # which follows the pattern "skill-${name}" or "skill-${name}-validated"
-      drvName = skillDrv.name or (builtins.baseNameOf skillDrv);
-      # Remove "skill-" prefix and "-validated" suffix
-      withoutPrefix = lib.removePrefix "skill-" drvName;
-      withoutSuffix = lib.removeSuffix "-validated" withoutPrefix;
-    in
-    withoutSuffix;
-
-  # Helper to get prompt name from derivation
-  # Prompt derivations contain ${name}.md at their root
-  getPromptName =
-    promptDrv:
-    let
-      # List files in the derivation
-      # The prompt file is ${name}.md
-      drvName = promptDrv.name or (builtins.baseNameOf promptDrv);
-    in
-    drvName;
-
-  # Helper to get extension info from derivation
-  # Uses passthru attributes if available, falls back to name parsing
-  getExtensionInfo =
-    extDrv:
-    let
-      # Try to get from passthru first
-      hasPassthru = extDrv ? passthru;
-      extName =
-        if hasPassthru && extDrv.passthru ? extensionName then
-          extDrv.passthru.extensionName
-        else
-          let
-            drvName = extDrv.name or (builtins.baseNameOf extDrv);
-            # Remove "extension-" prefix and version suffix
-            withoutPrefix = lib.removePrefix "extension-" drvName;
-            withoutVersion = builtins.head (lib.splitString "-" withoutPrefix);
-          in
-          withoutVersion;
-      extPath =
-        if hasPassthru && extDrv.passthru ? extensionPath then extDrv.passthru.extensionPath else extName;
-      isDir =
-        if hasPassthru && extDrv.passthru ? isDirectoryExtension then
-          extDrv.passthru.isDirectoryExtension
-        else
-          # Fallback: assume directory if path doesn't end in .ts
-          !(lib.hasSuffix ".ts" extPath);
-    in
-    {
-      name = extName;
-      path = extPath;
-      isDirectory = isDir;
-    };
-
-  # Generate home.file entries for skills
-  skillFiles = lib.listToAttrs (
-    map (skill: {
-      name = "${cfg.configDir}/skills/${getSkillName skill}";
-      value = {
-        source = skill;
-        recursive = true;
-      };
-    }) cfg.skills
-  );
-
-  # Generate home.file entries for prompts
-  # Prompts are single .md files, we need to link them individually
-  promptFiles = lib.listToAttrs (
-    map (prompt: {
-      name = "${cfg.configDir}/prompts/${getPromptName prompt}.md";
-      value = {
-        source = "${prompt}/${getPromptName prompt}.md";
-      };
-    }) cfg.prompts
-  );
-
-  # Generate home.file entries for extensions
-  # Uses passthru attributes to determine correct symlink structure
-  extensionFiles = lib.listToAttrs (
-    map (
-      ext:
-      let
-        info = getExtensionInfo ext;
-      in
-      {
-        name = "${cfg.configDir}/extensions/${info.path}";
-        value = {
-          source = "${ext}/${info.path}";
-        }
-        // lib.optionalAttrs info.isDirectory { recursive = true; };
-      }
-    ) cfg.extensions
-  );
-
-  # Generate settings.json if settings are provided
-  settingsFile = lib.optionalAttrs (cfg.settings != null) {
-    "${cfg.configDir}/settings.json" = {
-      text = builtins.toJSON cfg.settings;
-    };
-  };
-
 in
 {
   options.programs.pi = {
@@ -224,6 +117,11 @@ in
     home.packages = lib.mkIf (cfg.package != null) [ cfg.package ];
 
     # Install skills, prompts, extensions, and optionally settings
-    home.file = skillFiles // promptFiles // extensionFiles // settingsFile;
+    home.file.${cfg.configDir} = {
+      source = pkgs.mkPiEnv {
+        inherit (cfg) skills prompts extensions settings;
+      };
+      recursive = true;
+    };
   };
 }

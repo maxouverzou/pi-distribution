@@ -43,4 +43,8 @@
   mkExtensionWithDeps = import ./mkExtensionWithDeps.nix {
     inherit lib pkgs;
   };
+
+  mkPiEnv = import ./mkPiEnv.nix {
+    inherit lib pkgs;
+  };
 }

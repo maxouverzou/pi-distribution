@@ -24,5 +24,6 @@ packages
     mkPromptTemplate
     mkExtension
     mkExtensionWithDeps
+    mkPiEnv
     ;
 }
