@@ -12,7 +12,7 @@ let
     owner = "badlogic";
     repo = "pi-mono";
     rev = "df667b510a301f7ad4b7dc42991999601bd24ad3";
-    sha256 = "sha256-2upWf769kTm+R3filF9EJVxBfh591IdAIqvkTUbyKqo=";
+    sha256 = "sha256-KEylx4T7bVabV84kx2Sj1NZaeViafops1qBngaDGnKc=";
   };
 
   extensionsPath = "${piMonoSrc}/packages/coding-agent/examples/extensions";
