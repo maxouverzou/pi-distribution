@@ -36,7 +36,7 @@
         { pkgs }:
         {
           inherit (pkgs) hello pi-coding-agent skills-ref;
-          inherit (pkgs.piExtensions) tools plan-mode sandbox;
+          inherit (pkgs.piExtensions) tools plan-mode sandbox limits;
           inherit (pkgs.piSkills.conductor)
             conductor-setup
             conductor-implement

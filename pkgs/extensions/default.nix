@@ -38,4 +38,10 @@ in
     src = "${extensionsPath}/sandbox";
     npmDepsHash = "sha256-eJbT63DS557JrRE/dLLVITtZIHYsCxlowRJHIkSGKTc=";
   };
+
+  # Limits extension - checks AI subscription limits
+  limits = mkExtension {
+    name = "limits";
+    src = ./limits.ts;
+  };
 }

@@ -26,6 +26,7 @@ Home Manager module for [pi-coding-agent](https://shittycodingagent.ai/)
 - `tools` - Additional tool integrations
 - `plan-mode` - Planning and task management
 - `sandbox` - Safe execution environment
+- `limits` - AI subscription limit checks
 
 ### Prompts
 - `git-commit` - Create intelligent conventional commits based on conversation context
