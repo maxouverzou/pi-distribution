@@ -36,7 +36,12 @@
         { pkgs }:
         {
           inherit (pkgs) hello pi-coding-agent skills-ref;
-          inherit (pkgs.piExtensions) tools plan-mode sandbox limits;
+          inherit (pkgs.piExtensions)
+            tools
+            plan-mode
+            sandbox
+            limits
+            ;
           inherit (pkgs.piSkills.conductor)
             conductor-setup
             conductor-implement
@@ -62,22 +67,40 @@
 
       devShells = forEachSupportedSystem (
         { pkgs }:
+        let
+          # Fetch @types/node from npm
+          typesNode = pkgs.stdenv.mkDerivation {
+            pname = "types-node";
+            version = "22.10.5";
+
+            src = pkgs.fetchurl {
+              url = "https://registry.npmjs.org/@types/node/-/node-22.10.5.tgz";
+              hash = "sha256-8eZtwsBA+FPy6d69XZGqkOyIHvXyni31HWasLzrWf0Y=";
+            };
+
+            dontBuild = true;
+
+            installPhase = ''
+              mkdir -p $out/lib/node_modules/@types/node
+              cp -r . $out/lib/node_modules/@types/node/
+            '';
+          };
+        in
         {
           default = pkgs.mkShellNoCC {
             # The Nix packages provided in the environment
             packages = with pkgs; [
-              node2nix
+              pi-coding-agent
+
               nodejs
-              skills-ref
+              typescript
+              typesNode
             ];
 
-            # Set any environment variables for your dev shell
-            env = { };
-
-            # Add any shell logic you want executed any time the environment is activated
             shellHook = ''
-              echo "Pi distribution dev shell"
-              echo "Available: node2nix, nodejs, skills-ref"
+              mkdir -p .nix
+              ln -sfn ${pkgs.pi-coding-agent} .nix/pi-coding-agent
+              ln -sfn ${typesNode} .nix/types-node
             '';
           };
         }

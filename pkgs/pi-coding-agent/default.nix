@@ -9,11 +9,11 @@
 
 buildNpmPackage rec {
   pname = "pi-coding-agent";
-  version = "0.51.0";
+  version = "0.57.1";
 
   src = fetchurl {
     url = "https://registry.npmjs.org/@mariozechner/pi-coding-agent/-/pi-coding-agent-${version}.tgz";
-    hash = "sha256-XEgxOvOhvzBMq2mVjcgBP3FNmSM0YHpn5ubvUiXdcVY=";
+    hash = "sha256-hkjnHVVTOI7XEPHvQWXZ8JDheD5EZilBDFRYdaxWS28=";
   };
 
   sourceRoot = "package";
@@ -23,7 +23,7 @@ buildNpmPackage rec {
     cp ${./package-lock.json} package-lock.json
   '';
 
-  npmDepsHash = "sha256-LfPwE7eA1bs7sfsoP7P206SRaKvBtdxRH3S4fw81vmg=";
+  npmDepsHash = "sha256-swe+Calzn4MNnv6kJsbIoyiQyb0p2rtF7XS8eZlq9X0=";
 
   # The package is pre-built, no build step needed
   dontNpmBuild = true;
